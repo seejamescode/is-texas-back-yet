@@ -1,0 +1,36 @@
+{
+  "name": "is-texas-back-yet",
+  "version": "2.0.0",
+  "description": "Let's check if our Texas Longhorns are back...",
+  "main": "server/index.js",
+  "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "apicache": "^1.2.3",
+    "babel-plugin-styled-components": "^1.8.0",
+    "compression": "^1.7.3",
+    "express": "^4.16.3",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^7.0.1",
+    "next-ga": "^2.3.1",
+    "next-offline": "^3.0.2",
+    "node-fetch": "^2.2.0",
+    "node-html-parser": "^1.1.10",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "styled-components": "^3.4.9"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
+  "scripts": {
+    "build": "next build",
+    "deploy": "now && now alias && now scale is-texas-back-yet.now.sh 1 1 && now rm is-texas-back-yet -s -y",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon -w server/**/* server/index.js",
+    "now-start": "node server/index.js",
+    "start": "npm run dev",
+    "test": "true"
+  },
+  "author": "james@seejamescode.com",
+  "license": "MIT"
+}

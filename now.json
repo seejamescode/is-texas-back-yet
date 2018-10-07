@@ -1,0 +1,10 @@
+{
+  "alias": [
+    "is-texas-back-yet",
+    "istexasbackyet.com",
+    "www.istexasbackyet.com"
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "short_name": "Texas back?",
+  "name": "Is Texas back yet?",
+  "icons": [
+    {
+      "src": "/static/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/static/iconSmall.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/iconLarge.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#bf5700",
+  "background_color": "#bf5700"
+}
