@@ -2,9 +2,9 @@ import App, { Container } from "next/app";
 import Head from "next/head";
 import Router from "next/router";
 import withGA from "next-ga";
-import { injectGlobal } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700');
 
   :root {
@@ -12,7 +12,7 @@ injectGlobal`
   }
 
   body {
-    background: var(--orange);
+    background: #040200;
     color: #fff;
     font-family: 'Libre Franklin', sans-serif;
     margin: 0;
@@ -58,6 +58,7 @@ class MyApp extends App {
 
     return (
       <Container>
+        <GlobalStyle />
         <Head>
           <title>Is Texas back yet?</title>
         </Head>

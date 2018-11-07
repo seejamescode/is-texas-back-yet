@@ -6,18 +6,6 @@ const Container = styled.p`
   display: flex;
   justify-content: space-between;
   position: relative;
-
-  @media (orientation: landscape) {
-    :before {
-      background: #a75414;
-      content: "";
-      height: calc(100% + 2rem);
-      left: -2rem;
-      position: absolute;
-      top: -1rem;
-      width: 1px;
-    }
-  }
 `;
 
 class Game extends Component {
