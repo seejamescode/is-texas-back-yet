@@ -12,14 +12,18 @@ class Game extends Component {
   static propTypes = {
     context: propTypes.string.isRequired,
     date: propTypes.string.isRequired,
+    index: propTypes.number.isRequired,
     opponent: propTypes.string.isRequired,
     result: propTypes.string,
     score: propTypes.string
   };
 
   render() {
+    const again = this.props.index >= 12 ? " Again" : "";
     const opponent =
-      this.props.opponent === "Oklahoma" ? "OU Sucks" : this.props.opponent;
+      this.props.opponent === "Oklahoma"
+        ? `OU Sucks${again}`
+        : this.props.opponent;
 
     return (
       <Container result={this.props.result}>

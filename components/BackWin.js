@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { createGlobalStyle } from "styled-components";
 if (typeof window !== "undefined") {
   const emojisplosions = require("emojisplosion/lib/global.js");
 }
@@ -13,6 +14,21 @@ const hue = keyframes`
   }
 `;
 
+const GlobalStyle = createGlobalStyle`
+  .emoji-styles {
+    z-index: -1 !important;
+  }
+`;
+
+const Button = styled.button`
+  background: none;
+  border: none;
+  color: var(--orange);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 2rem;
+`;
+
 const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
@@ -21,6 +37,7 @@ const Container = styled.div`
   height: 100%;
   justify-content: center;
   padding: 1rem;
+  position: absolute;
   width: 100%;
 
   h1 {
@@ -42,7 +59,6 @@ const Container = styled.div`
 
 class BackWin extends Component {
   componentDidMount() {
-    console.log("here");
     const { cancel } = emojisplosions({
       emojiCount: 10,
       emojis: ["🤘", "🐮", "🏈 ", "🧡"],
@@ -63,10 +79,13 @@ class BackWin extends Component {
       <Container>
         <h1>Texas is finally back!</h1>
         <p>
-          Congrats on the 2018 season being the first 10+ win season since 2009!
-          50,000 of ya weirdos checked the site leading up to this moment. Are
-          you happy? Now let’s stay back forever. Hook 'em Horns!
+          Congrat to the players and staff! The 2018 season is the first time
+          Texas Football has had 10+ wins since 2009!
         </p>
+        <Button
+          onClick={() => this.props.return()}
+        >{`< Return to main screen`}</Button>
+        <GlobalStyle />
       </Container>
     );
   }

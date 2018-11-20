@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import fetch from "isomorphic-unfetch";
 import styled, { createGlobalStyle } from "styled-components";
+import BackWin from "../components/BackWin";
 import Game from "../components/Game";
-import GameFrame from "../components/GameFrame";
 import Progress from "../components/Progress";
 
 const GlobalStyle = createGlobalStyle`
@@ -61,7 +61,7 @@ const Hero = styled.section`
   overflow-x: hidden;
   position: relative;
   top: 0;
-  transition: ${props => (props.transitioning ? "transform 2s linear" : null)};
+  transition: transform 2s linear;
   transform: ${props => (props.startBack ? "translateY(-100%)" : null)};
   width: 100%;
   z-index: 2;
@@ -119,7 +119,7 @@ const Scores = styled.section`
   overflow-x: hidden;
   position: relative;
   transform: ${props => (props.startBack ? "translateY(100%)" : null)};
-  transition: ${props => (props.transitioning ? "transform 2s linear" : null)};
+  transition: transform 2s linear;
   z-index: 2;
 
   :before {
@@ -148,6 +148,22 @@ const Scores = styled.section`
   }
 `;
 
+const countWins = games =>
+  games.map(game => game.result === "W").filter(v => v).length;
+
+const getText = games => {
+  const gamesLeft = games.filter(game => game.result === null).length;
+  const wins = countWins(games);
+
+  let text = wins >= back ? "Yes!" : "No.";
+  if (wins === 5 && gamesLeft >= 5) {
+    text = "Halfway!";
+  } else if ((wins === 8 && gamesLeft >= 2) || (wins === 9 && gamesLeft >= 1)) {
+    text = "No...";
+  }
+  return text;
+};
+
 class Index extends Component {
   static getInitialProps = async function({ req }) {
     const host = req ? `http://${req.headers.host}` : "";
@@ -159,76 +175,57 @@ class Index extends Component {
 
   state = {
     startBack: false,
-    transitioning: false
+    text: getText(this.props.games),
+    wins: countWins(this.props.games)
+  };
+
+  componentDidMount() {
+    if (this.state.wins >= 10) {
+      this.setState({
+        startBack: true
+      });
+    }
+  }
+
+  return = () => {
+    this.setState({
+      startBack: false
+    });
   };
 
   render() {
-    const wins = this.props.games
-      .map(game => game.result === "W")
-      .filter(v => v).length;
-    const gamesLeft = this.props.games.filter(game => game.result === null)
-      .length;
-    let text = wins >= back ? "Yes!" : "No.";
-    if (wins === 5 && gamesLeft >= 5) {
-      text = "Halfway!";
-    } else if (
-      (wins === 8 && gamesLeft >= 2) ||
-      (wins === 9 && gamesLeft >= 1)
-    ) {
-      text = "Almost!";
-    }
-
-    if (typeof window !== "undefined" && this.state.startBack) {
-      window.scroll({ top: 0, left: 0, behavior: "smooth" });
-    }
-
     return (
       <Container startBack={this.state.startBack}>
         <GlobalStyle startBack={this.state.startBack} />
-        <Hero
-          startBack={this.state.startBack}
-          transitioning={this.state.transitioning}
-        >
+        <Hero startBack={this.state.startBack}>
           <div>
-            <P size={text.length}>
-              <strong>{text}</strong>
+            <P size={this.state.text.length}>
+              <strong>{this.state.text}</strong>
             </P>
-            {wins >= 10 ? (
-              <Progress back={back} wins={wins} />
-            ) : (
+            {this.state.wins >= 10 ? (
               <BackButton
                 disabled={this.state.startBack}
-                onClick={() =>
-                  this.setState(
-                    { startBack: true, transitioning: true },
-                    () => {
-                      setTimeout(
-                        () => this.setState({ transitioning: false }),
-                        2000
-                      );
-                    }
-                  )
-                }
+                onClick={() => this.setState({ startBack: true })}
               >
-                <span>Activate Back Mode</span>
+                Celebration Mode
               </BackButton>
+            ) : (
+              <Progress back={back} wins={this.state.wins} />
             )}
           </div>
         </Hero>
-        <Scores
-          startBack={this.state.startBack}
-          transitioning={this.state.transitioning}
-        >
+        <Scores startBack={this.state.startBack}>
           <Description>
             Texas Football will be back
             <br />
             when it gets {back} wins.
           </Description>
-          {this.props.games.map(game => (
+          {this.props.games.map((game, index) => (
             <Game
               context={game.context}
               date={game.date}
-              key={game.opponent}
+              index={index}
+              key={index}
               opponent={game.opponent}
               result={game.result}
               score={game.score}
@@ -247,9 +244,7 @@ class Index extends Component {
             </small>
           </Description>
         </Scores>
-        {this.state.startBack ? (
-          <GameFrame startBack={this.state.startBack} />
-        ) : null}
+        {this.state.startBack ? <BackWin return={this.return} /> : null}
       </Container>
     );
   }
