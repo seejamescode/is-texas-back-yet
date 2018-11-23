@@ -174,7 +174,7 @@ class Index extends Component {
   };
 
   state = {
-    persistBack: true,
+    persistBack: countWins(this.props.games) >= back,
     startBack: false,
     text: getText(this.props.games),
     wins: countWins(this.props.games)
