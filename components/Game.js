@@ -20,9 +20,10 @@ class Game extends Component {
 
   render() {
     const again = this.props.index >= 12 ? " Again" : "";
-    const opponent = this.props.opponent.includes("Oklahoma")
-      ? `OU Sucks${again}`
-      : this.props.opponent;
+    const opponent =
+      this.props.opponent === "Oklahoma"
+        ? `OU Sucks${again}`
+        : this.props.opponent;
 
     return (
       <Container result={this.props.result}>
