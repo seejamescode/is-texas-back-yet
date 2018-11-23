@@ -5,6 +5,8 @@ if (typeof window !== "undefined") {
 }
 import styled, { keyframes } from "styled-components";
 
+const gifs = ["bevo", "dicker-the-kicker", "lil-jordan", "nelly-belly"];
+
 const hue = keyframes`
   from {
     -webkit-filter: hue-rotate(0deg);
@@ -16,7 +18,7 @@ const hue = keyframes`
 
 const GlobalStyle = createGlobalStyle`
   .emoji-styles {
-    z-index: -1 !important;
+    z-index: 0 !important;
   }
 `;
 
@@ -31,6 +33,7 @@ const Button = styled.button`
 
 const Container = styled.div`
   align-items: center;
+background-image: url("./static/gifs/${props => gifs[props.currentGif]}.gif");
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -47,6 +50,7 @@ const Container = styled.div`
     -webkit-animation: ${hue} 10s infinite linear;
     font-size: calc(2rem + 1vmin);
     margin-top: 0;
+    text-align: center;
   }
 
   p {
@@ -57,34 +61,56 @@ const Container = styled.div`
   }
 `;
 
+const Content = styled.div`
+  background: black;
+  padding: 2rem;
+`;
+
 class BackWin extends Component {
+  state = {
+    currentGif: Math.floor(Math.random() * gifs.length)
+  };
+
   componentDidMount() {
     const { cancel } = emojisplosions({
+      container: document.getElementById("fun"),
       emojiCount: 10,
       emojis: ["🤘", "🐮", "🏈 ", "🧡"],
       interval: 1500
     });
 
+    var interval = setInterval(this.timer, 3000);
     this.setState({
-      cancel
+      cancel,
+      interval
     });
   }
 
   componentWillUnmount() {
+    clearInterval(this.state.interval);
     this.state.cancel();
   }
 
+  timer = () => {
+    this.setState({
+      currentGif:
+        this.state.currentGif === gifs.length - 1
+          ? 0
+          : this.state.currentGif + 1
+    });
+  };
+
   render() {
     return (
-      <Container>
-        <h1>Texas is finally back!</h1>
-        <p>
-          Congrat to the players and staff! The 2018 season is the first time
-          Texas Football has had 10+ wins since 2009!
-        </p>
-        <Button
-          onClick={() => this.props.return()}
-        >{`< Return to main screen`}</Button>
+      <Container currentGif={this.state.currentGif} id="fun">
+        <Content>
+          <h1>Texas is finally back!</h1>
+          <p>
+            Congrat to the players and staff! The 2018 season is the first time
+            Texas Football has had 10+ wins since 2009!
+          </p>
+          <Button onClick={() => this.props.return()}>{`< Return`}</Button>
+        </Content>
         <GlobalStyle />
       </Container>
     );

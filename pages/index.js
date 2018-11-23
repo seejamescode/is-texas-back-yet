@@ -174,13 +174,14 @@ class Index extends Component {
   };
 
   state = {
+    persistBack: true,
     startBack: false,
     text: getText(this.props.games),
     wins: countWins(this.props.games)
   };
 
   componentDidMount() {
-    if (this.state.wins >= 10) {
+    if (this.state.wins >= back) {
       this.setState({
         startBack: true
       });
@@ -188,9 +189,18 @@ class Index extends Component {
   }
 
   return = () => {
-    this.setState({
-      startBack: false
-    });
+    this.setState(
+      {
+        startBack: false
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            persistBack: false
+          });
+        }, 2000);
+      }
+    );
   };
 
   render() {
@@ -202,7 +212,7 @@ class Index extends Component {
             <P size={this.state.text.length}>
               <strong>{this.state.text}</strong>
             </P>
-            {this.state.wins >= 10 ? (
+            {this.state.wins >= back ? (
               <BackButton
                 disabled={this.state.startBack}
                 onClick={() => this.setState({ startBack: true })}
@@ -244,7 +254,9 @@ class Index extends Component {
             </small>
           </Description>
         </Scores>
-        {this.state.startBack ? <BackWin return={this.return} /> : null}
+        {this.state.startBack || this.state.persistBack ? (
+          <BackWin return={this.return} />
+        ) : null}
       </Container>
     );
   }
