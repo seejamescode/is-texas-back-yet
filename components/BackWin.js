@@ -5,7 +5,58 @@ if (typeof window !== "undefined") {
 }
 import styled, { keyframes } from "styled-components";
 
-const gifs = ["bevo", "dicker-the-kicker", "lil-jordan", "nelly-belly"];
+const backgroundGifs = [
+  "bevo",
+  "dicker-the-kicker",
+  "lil-jordan",
+  "nelly-belly"
+];
+
+const catGifs = ["beck", "herman", "orlando"];
+
+const fly = keyframes`
+  from {
+    transform: translate(-100%, -100%);
+  }
+  to {
+    transform: translate(100vw, 100vh);
+  }
+`;
+
+const flybys = [
+  keyframes`
+    from {
+      transform: translate(-100%, 100vh);
+    }
+    to {
+      transform: translate(100vw, -100%);
+    }
+  `,
+  keyframes`
+    from {
+      transform: translate(-100%, -100%);
+    }
+    to {
+      transform: translate(100vw, 100vh);
+    }
+  `,
+  keyframes`
+    from {
+      transform: translate(100vw, 100vh) scaleX(-1);
+    }
+    to {
+      transform: translate(-100%, -100%) scaleX(-1);
+    }
+  `,
+  keyframes`
+    from {
+      transform: translate(100vw, -100%) scaleX(-1);
+    }
+    to {
+      transform: translate(-100%, 100vh) scaleX(-1);
+    }
+  `
+];
 
 const hue = keyframes`
   from {
@@ -31,14 +82,25 @@ const Button = styled.button`
   margin-top: 2rem;
 `;
 
+const Cat = styled.img`
+  animation: ${props => props.keyframes} 5s infinite linear;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 50vmin;
+`;
+
 const Container = styled.div`
   align-items: center;
-background-image: url("./static/gifs/${props => gifs[props.currentGif]}.gif");
+  background-image: url("./static/gifs/${props =>
+    backgroundGifs[props.currentBackgroundGif]}.gif");
   box-sizing: border-box;
+  cursor: url("./static/gifs/football.ani"), url("./static/gifs/football.gif"), url("./static/gifs/football.png"), auto !important;
   display: flex;
   flex-direction: column;
   height: 100%;
   justify-content: center;
+  overflow: hidden;
   padding: 1rem;
   position: absolute;
   width: 100%;
@@ -63,12 +125,16 @@ background-image: url("./static/gifs/${props => gifs[props.currentGif]}.gif");
 
 const Content = styled.div`
   background: black;
+  margin-top: -2rem;
   padding: 2rem;
 `;
 
 class BackWin extends Component {
   state = {
-    currentGif: Math.floor(Math.random() * gifs.length)
+    catExploded: false,
+    currentBackgroundGif: Math.floor(Math.random() * backgroundGifs.length),
+    currentCatGif: Math.floor(Math.random() * catGifs.length),
+    currentFly: Math.floor(Math.random() * flybys.length)
   };
 
   componentDidMount() {
@@ -79,30 +145,56 @@ class BackWin extends Component {
       interval: 1500
     });
 
-    var interval = setInterval(this.timer, 3000);
+    var backgroundInterval = setInterval(this.backgroundTimer, 3000);
+    var catInterval = setInterval(this.catTimer, 5000);
     this.setState({
       cancel,
-      interval
+      backgroundInterval,
+      catInterval
     });
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.interval);
+    clearInterval(this.state.backgroundInterval);
+    clearInterval(this.state.catInterval);
     this.state.cancel();
   }
 
-  timer = () => {
+  backgroundTimer = () => {
     this.setState({
-      currentGif:
-        this.state.currentGif === gifs.length - 1
+      currentBackgroundGif:
+        this.state.currentBackgroundGif === backgroundGifs.length - 1
           ? 0
-          : this.state.currentGif + 1
+          : this.state.currentBackgroundGif + 1
+    });
+  };
+
+  catTimer = () => {
+    this.setState({
+      catExploded: false,
+      currentCatGif:
+        this.state.currentCatGif === catGifs.length - 1
+          ? 0
+          : this.state.currentCatGif + 1,
+      currentFly:
+        this.state.currentFly === flybys.length - 1
+          ? 0
+          : this.state.currentFly + 1
+    });
+  };
+
+  explodeCat = () => {
+    this.setState({
+      catExploded: true
     });
   };
 
   render() {
     return (
-      <Container currentGif={this.state.currentGif} id="fun">
+      <Container
+        currentBackgroundGif={this.state.currentBackgroundGif}
+        id="fun"
+      >
         <Content>
           <h1>Texas is finally back!</h1>
           <p>
@@ -111,6 +203,16 @@ class BackWin extends Component {
           </p>
           <Button onClick={() => this.props.return()}>{`< Return`}</Button>
         </Content>
+        <Cat
+          keyframes={flybys[this.state.currentFly]}
+          onClick={() => this.explodeCat()}
+          onTouchStart={() => this.explodeCat()}
+          src={
+            this.state.catExploded
+              ? `./static/gifs/explosion2.gif`
+              : `./static/gifs/${catGifs[this.state.currentCatGif]}.gif`
+          }
+        />
         <GlobalStyle />
       </Container>
     );

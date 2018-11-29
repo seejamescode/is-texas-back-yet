@@ -7,7 +7,9 @@ import Progress from "../components/Progress";
 
 const GlobalStyle = createGlobalStyle`
   body {
+    position: ${props => (props.startBack ? "fixed" : null)};
     overflow-y: ${props => (props.startBack ? "hidden" : null)};
+    width: 100%;
   }
 `;
 
@@ -15,6 +17,7 @@ const back = 10;
 const Container = styled.div`
   display: grid;
   overflow-y: hidden;
+  height: ${props => (props.startBack ? "100vh" : "initial")};
 
   @media (orientation: landscape) {
     grid-template-columns: 1fr minmax(20rem, min-content);
@@ -33,9 +36,11 @@ const Description = styled.p`
 `;
 
 const BackButton = styled.button`
+  -webkit-appearance: none;
+  background: transparent;
   border-color: white;
   border-width: 2px;
-  color: var(--orange);
+  color: white;
   cursor: ${props => (props.disabled ? "disabled" : "pointer")};
   font-size: 1rem;
   outline: 2px solid var(--orange);
