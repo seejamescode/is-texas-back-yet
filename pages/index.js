@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import fetch from "isomorphic-unfetch";
-import styled, { createGlobalStyle } from "styled-components";
+import ReactPlayer from "react-player";
+import styled, { createGlobalStyle, keyframes } from "styled-components";
 import BackWin from "../components/BackWin";
 import Game from "../components/Game";
 import Progress from "../components/Progress";
@@ -11,6 +12,12 @@ const GlobalStyle = createGlobalStyle`
     overflow-y: ${props => (props.startBack ? "hidden" : null)};
     width: 100%;
   }
+`;
+
+const pulse = keyframes`
+  0%{transform: scale(1)}
+  50%{transform: scale(1.05)}
+  100%{transform: scale(1)}
 `;
 
 const back = 10;
@@ -37,9 +44,11 @@ const Description = styled.p`
 
 const BackButton = styled.button`
   -webkit-appearance: none;
-  background: transparent;
+  animation: ${pulse} 2s ease infinite;}
+  background: var(--orange);
+  background-size: 100% 100%;
   border-color: white;
-  border-width: 2px;
+  border-width: 4px;
   color: white;
   cursor: ${props => (props.disabled ? "disabled" : "pointer")};
   font-size: 1rem;
@@ -49,14 +58,33 @@ const BackButton = styled.button`
   position: relative;
 
   :hover {
+    background: white;
+    color: var(--orange);
     outline-offset: ${props => (props.disabled ? null : "-6px")};
     outline-width: ${props => (props.disabled ? null : "4px")};
+
+    polygon {
+      stroke: var(--orange) !important;
+    }
+
+    polygon, path {
+      fill: var(--orange) !important;
+    }
   }
 
   :focus {
     background: ${props => (props.disabled ? null : "#ececec")};
+    color: var(--orange);
     outline-offset: ${props => (props.disabled ? null : "-8px")};
     outline-width: ${props => (props.disabled ? null : "6px")};
+
+    polygon {
+      stroke: var(--orange) !important;
+    }
+
+    polygon, path {
+      fill: var(--orange) !important;
+    }
   }
 `;
 
@@ -85,7 +113,6 @@ const Hero = styled.section`
     left: calc((100vw - 100%) / -2);
     height: 1px;
     position: absolute;
-    transition: box-shadow 0.1s linear;
     width: 100vw;
   }
 
@@ -134,7 +161,6 @@ const Scores = styled.section`
     height: 1px;
     position: absolute;
     top: 0;
-    transition: box-shadow 0.1s linear;
     width: 100vw;
   }
 
@@ -171,11 +197,112 @@ const getText = games => {
 
 class Index extends Component {
   static getInitialProps = async function({ req }) {
-    const host = req ? `http://${req.headers.host}` : "";
-    const res = await fetch(`${host}/schedule`);
-    const games = await res.json();
+    // const host = req ? `http://${req.headers.host}` : "";
+    // const res = await fetch(`${host}/schedule`);
+    // const games = await res.json();
 
-    return { games };
+    return {
+      games: [
+        {
+          opponent: "Maryland",
+          context: "at",
+          date: "Sep 1 ",
+          result: "L",
+          score: "29-34"
+        },
+        {
+          opponent: "Tulsa",
+          context: "vs",
+          date: "Sep 8 ",
+          result: "W",
+          score: "28-21"
+        },
+        {
+          opponent: "USC",
+          context: "vs",
+          date: "Sep 15 ",
+          result: "W",
+          score: "37-14"
+        },
+        {
+          opponent: "TCU",
+          context: "vs",
+          date: "Sep 22 ",
+          result: "W",
+          score: "31-16"
+        },
+        {
+          opponent: "Kansas State",
+          context: "at",
+          date: "Sep 29 ",
+          result: "W",
+          score: "19-14"
+        },
+        {
+          opponent: "Oklahoma",
+          context: "vs",
+          date: "Oct 6 ",
+          result: "W",
+          score: "48-45"
+        },
+        {
+          opponent: "Baylor",
+          context: "vs",
+          date: "Oct 13 ",
+          result: "W",
+          score: "23-17"
+        },
+        {
+          opponent: "Oklahoma State ",
+          context: "at",
+          date: "Oct 27 ",
+          result: "L",
+          score: "35-38"
+        },
+        {
+          opponent: "West Virginia ",
+          context: "vs",
+          date: "Nov 3 ",
+          result: "L",
+          score: "41-42"
+        },
+        {
+          opponent: "Texas Tech",
+          context: "at",
+          date: "Nov 10 ",
+          result: "W",
+          score: "41-34"
+        },
+        {
+          opponent: "Iowa State",
+          context: "vs",
+          date: "Nov 17 ",
+          result: "W",
+          score: "24-10"
+        },
+        {
+          opponent: "Kansas",
+          context: "at",
+          date: "Nov 23 ",
+          result: "W",
+          score: "24-17"
+        },
+        {
+          opponent: "Oklahoma",
+          context: "vs",
+          date: "Dec 1 ",
+          result: "L",
+          score: "27-39"
+        },
+        {
+          opponent: "Georgia",
+          context: "vs",
+          date: "Jan 1 ",
+          result: "W",
+          score: "28-21"
+        }
+      ]
+    };
   };
 
   state = {
@@ -186,16 +313,19 @@ class Index extends Component {
   };
 
   componentDidMount() {
-    if (this.state.wins >= back) {
-      this.setState({
-        startBack: true
-      });
-    }
+    setTimeout(() => {
+      if (this.state.wins >= back) {
+        this.setState({
+          startBack: true
+        });
+      }
+    }, 2000);
   }
 
   return = () => {
     this.setState(
       {
+        persistBack: true,
         startBack: false
       },
       () => {
@@ -223,6 +353,63 @@ class Index extends Component {
                 onClick={() => this.setState({ startBack: true })}
               >
                 Celebration Mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.0"
+                  id="layer1"
+                  width="400pt"
+                  height="400pt"
+                  style={{
+                    height: "1rem",
+                    marginLeft: "1rem",
+                    transform: "translateY(.1rem)",
+                    width: "1rem"
+                  }}
+                  viewBox="0 0 75 75"
+                >
+                  <g id="g1">
+                    <polygon
+                      id="polygon1"
+                      points="39.389,13.769 22.235,28.606 6,28.606 6,47.699 21.989,47.699 39.389,62.75 39.389,13.769"
+                      style={{
+                        stroke: "#fff",
+                        strokeWidth: 5,
+                        strokeLinejoin: "round",
+                        fill: "#fff"
+                      }}
+                    />
+                    <path
+                      id="path1"
+                      d="M 48.128,49.03 C 50.057,45.934 51.19,42.291 51.19,38.377 C 51.19,34.399 50.026,30.703 48.043,27.577"
+                      style={{
+                        fill: "none",
+                        stroke: "#fff",
+                        strokeWidth: 5,
+                        strokeLinecap: "round"
+                      }}
+                    />
+                    <path
+                      id="path2"
+                      d="M 55.082,20.537 C 58.777,25.523 60.966,31.694 60.966,38.377 C 60.966,44.998 58.815,51.115 55.178,56.076"
+                      style={{
+                        fill: "none",
+                        stroke: "#fff",
+                        strokeWidth: 5,
+                        strokeLinecap: "round"
+                      }}
+                    />
+                    <path
+                      id="path1"
+                      d="M 61.71,62.611 C 66.977,55.945 70.128,47.531 70.128,38.378 C 70.128,29.161 66.936,20.696 61.609,14.01"
+                      style={{
+                        fill: "none",
+                        stroke: "#fff",
+                        strokeWidth: 5,
+                        strokeLinecap: "round"
+                      }}
+                    />
+                  </g>
+                </svg>
               </BackButton>
             ) : (
               <Progress back={back} wins={this.state.wins} />
@@ -258,6 +445,12 @@ class Index extends Component {
               </a>
             </small>
           </Description>
+          <ReactPlayer
+            height={0}
+            playing={this.state.startBack}
+            url="./static/eyes-of-texas.mp3"
+            width={0}
+          />
         </Scores>
         {this.state.startBack || this.state.persistBack ? (
           <BackWin return={this.return} />

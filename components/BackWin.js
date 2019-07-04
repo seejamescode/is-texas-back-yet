@@ -67,6 +67,26 @@ const hue = keyframes`
   }
 `;
 
+const spotlightPosition = function() {
+  return `transform: translate(calc(${Math.random() *
+    100}vw - 20vmin), calc(${Math.random() * 100}vh - 20vmin))`;
+};
+const spotlight = function() {
+  const firstPosition = spotlightPosition();
+  return keyframes`
+    0%   { ${firstPosition} }
+    10%   { ${spotlightPosition()} }
+    20%   { ${spotlightPosition()} }
+    30%   { ${spotlightPosition()} }
+    40%   { ${spotlightPosition()} }
+    50%   { ${spotlightPosition()} }
+    60%   { ${spotlightPosition()} }
+    80%   { ${spotlightPosition()} }
+    90%   { ${spotlightPosition()} }
+    100%   { ${firstPosition} }
+  `;
+};
+
 const GlobalStyle = createGlobalStyle`
   .emoji-styles {
     z-index: 0 !important;
@@ -80,6 +100,12 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 1rem;
   margin-top: 2rem;
+
+  :focus,
+  :hover {
+    color: white;
+    outline: none;
+  }
 `;
 
 const Cat = styled.img`
@@ -94,6 +120,8 @@ const Container = styled.div`
   align-items: center;
   background-image: url("./static/gifs/${props =>
     backgroundGifs[props.currentBackgroundGif]}.gif");
+  background-position: center;
+  background-size: 20rem;
   box-sizing: border-box;
   cursor: url("./static/gifs/football.ani"), url("./static/gifs/football.gif"), url("./static/gifs/football.png"), auto !important;
   display: flex;
@@ -109,17 +137,19 @@ const Container = styled.div`
     background-image: -webkit-linear-gradient(92deg, var(--orange), white);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-animation: ${hue} 10s infinite linear;
-    font-size: calc(2rem + 1vmin);
+    animation: ${hue} 1s infinite linear;
+    font-size: 2rem;
     margin-top: 0;
+    max-width: 27rem;
     text-align: center;
+    text-transform: uppercase;
   }
 
   p {
-    font-size: calc(0.8rem + 1vmin);
+    font-size: 1.25rem;
     line-height: 1.4;
-    margin-bottom: 0;
-    max-width: 40ch;
+    margin: 0;
+    max-width: 25rem;
   }
 `;
 
@@ -127,6 +157,34 @@ const Content = styled.div`
   background: black;
   margin-top: -2rem;
   padding: 2rem;
+`;
+
+const spotlightStyles = `
+  background: var(--orange);
+  border-radius: 50%;
+  box-shadow: 0 0 15px 30px var(--orange);
+  height: 40vmin;
+  left: 0;
+  opacity: 0.2;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 40vmin;
+`;
+
+const Spotlight1 = styled.div`
+  animation: ${spotlight()} 5s infinite ease-in-out;
+  ${spotlightStyles}
+`;
+
+const Spotlight2 = styled.div`
+  animation: ${spotlight()} 8s infinite ease-in-out;
+  ${spotlightStyles}
+`;
+
+const Spotlight3 = styled.div`
+  animation: ${spotlight()} 10s infinite ease-in-out;
+  ${spotlightStyles}
 `;
 
 class BackWin extends Component {
@@ -203,6 +261,9 @@ class BackWin extends Component {
           </p>
           <Button onClick={() => this.props.return()}>{`< Return`}</Button>
         </Content>
+        <Spotlight1 />
+        <Spotlight2 />
+        <Spotlight3 />
         <Cat
           keyframes={flybys[this.state.currentFly]}
           onClick={() => this.explodeCat()}

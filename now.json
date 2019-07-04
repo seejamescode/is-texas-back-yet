@@ -1,11 +1,10 @@
 {
-  "version": 1,
   "alias": [
     "is-texas-back-yet",
     "istexasbackyet.com",
     "www.istexasbackyet.com"
   ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "version": 2,
+  "builds": [{ "src": "out/**", "use": "@now/static" }],
+  "routes": [{ "src": "/(.*)", "dest": "out/$1" }]
 }

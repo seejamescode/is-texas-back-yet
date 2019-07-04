@@ -2,7 +2,7 @@
 
 Let's check if our Texas Longhorns are back...
 
-This project uses a UI made with [React.js](https://github.com/facebook/react/)/[Next.js](https://github.com/zeit/next.js/) and a server using [Node.js](https://nodejs.org/en/)/[Express.js](https://expressjs.com/).
+This project uses a UI made with [React.js](https://github.com/facebook/react/)/[Next.js](https://github.com/zeit/next.js/) ~and a server using [Node.js](https://nodejs.org/en/)/[Express.js](https://expressjs.com/)~. This project was exported to a static site once the season was over and Texas came back.
 
 ## Development
 
