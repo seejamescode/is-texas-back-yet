@@ -1,9 +1,4 @@
 {
-  "alias": [
-    "is-texas-back-yet",
-    "istexasbackyet.com",
-    "www.istexasbackyet.com"
-  ],
   "version": 2,
   "rewrites": [
     {
