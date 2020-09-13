@@ -48,7 +48,7 @@ export default class MyDocument extends Document {
           />
           <meta
             property="og:image"
-            content="https://istexasbackyet.com/static/thumbnail.png"
+            content="https://istexasbackyet.com/static/thumbnail-title.png"
           />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://istexasbackyet.com" />
@@ -60,7 +60,7 @@ export default class MyDocument extends Document {
           />
           <meta
             name="twitter:image"
-            content="https://istexasbackyet.com/static/thumbnail.png"
+            content="https://istexasbackyet.com/static/thumbnail-title.png"
           />
           <meta name="twitter:creator" content="@seejamescode" />
           <link
