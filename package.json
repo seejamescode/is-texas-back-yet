@@ -1,6 +1,6 @@
 {
   "name": "is-texas-back-yet",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Let's check if our Texas Longhorns are back...",
   "repository": {
     "type": "git",
@@ -8,23 +8,25 @@
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
-    "babel-plugin-styled-components": "^1.8.0",
+    "date-fns": "^2.16.1",
     "isomorphic-unfetch": "^3.0.0",
-    "next": "^9.0.5",
+    "next": "^9.5.3",
     "next-ga": "^2.3.4",
-    "next-offline": "^5.0.0-beta.4",
+    "next-offline": "^5.0.2",
     "prop-types": "^15.6.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "styled-components": "^4.0.2"
+    "styled-components": "^5.2.0"
   },
   "scripts": {
     "build": "next build",
     "dev": "next",
-    "deploy": "now --prod",
     "start": "npm run dev",
     "test": "true"
   },
   "author": "james@seejamescode.com",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.11.1"
+  }
 }
