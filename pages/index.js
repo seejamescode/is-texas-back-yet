@@ -114,7 +114,8 @@ const Stadium = styled.img`
 
 const TextLg = styled.h1`
   font-size: ${({ theme }) => theme.sizing.lg}rem;
-  margin: 0;
+  margin-bottom: ${({ theme }) => theme.sizing.sm}rem;
+  margin-top: 0;
   text-align: ${({ textAlign }) => textAlign};
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
