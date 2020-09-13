@@ -1,5 +1,5 @@
 import React from "react";
-import { format, parseJSON } from "date-fns";
+import { format, parseISO } from "date-fns";
 import styled from "styled-components";
 
 const Anchor = styled.a`
@@ -189,8 +189,8 @@ const Home = ({ progress, schedule, status }) => (
               to assess the risk of different activities.
             </TextSm>
             <picture>
-              <source srcset="static/stadium.webp" type="image/webp" />
-              <source srcset="static/stadium.png" type="image/png" />
+              <source srcSet="static/stadium.webp" type="image/webp" />
+              <source srcSet="static/stadium.png" type="image/png" />
               <Stadium src="static/stadium.png" alt="football stadium" />
             </picture>
           </SectionPanel>
@@ -214,11 +214,9 @@ const Home = ({ progress, schedule, status }) => (
                         ? `${
                             isWin ? "W" : "L"
                           } ${pointsTexas}-${pointsOpponent}`
-                        : `${
-                            isTimeScheduled
-                              ? format(parseJSON(datetime), "M/d @ h:mmaaaa")
-                              : format(parseJSON(datetime), "M/d")
-                          }`}
+                        : isTimeScheduled
+                        ? format(parseISO(datetime), "M/d, h:mmaaaa")
+                        : format(parseISO(datetime.substring(0, 10)), "M/d")}
                     </span>
                   </Game>
                 )
