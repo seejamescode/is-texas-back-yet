@@ -158,8 +158,8 @@ const Home = ({ progress, schedule, status }) => (
             <TextLg>Is Texas back yet?</TextLg>
             <TextSm>
               2020 is a difficult season for Texas Football with a lot of
-              potential. With potentially only ten regular season games plus
-              postseason, let’s see if we can get ten wins.
+              potential. Let’s see if we can get ten wins in only up to ten
+              regular season games and a postseason.
             </TextSm>
           </Section>
           <SectionPanel>
