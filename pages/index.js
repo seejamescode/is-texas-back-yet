@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { format, parseISO } from "date-fns";
-import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
+import styled, { ThemeContext } from "styled-components";
 
 const Anchor = styled.a`
   color: inherit;
@@ -8,7 +9,17 @@ const Anchor = styled.a`
   text-decoration: none;
 `;
 
-const Bar = styled.div`
+const Bar = styled(motion.div)`
+  background: linear-gradient(315deg, #e2ac6b 0%, #cba36d 74%);
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: skewX(-10deg) scale(1.05);
+`;
+
+const BarContainer = styled.div`
   border-radius: ${({ theme }) => theme.sizing.lg}rem;
   background: linear-gradient(270deg, #ffffff, #e6e6e6);
   height: ${({ theme }) => theme.sizing.xl}rem;
@@ -24,17 +35,6 @@ const Bar = styled.div`
     position: absolute;
     top: 35%;
   }
-
-  :before {
-    background: linear-gradient(315deg, #e2ac6b 0%, #cba36d 74%);
-    content: "";
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    transform: skewX(-10deg) scale(1.05);
-    width: ${({ progress }) => progress};
-  }
 `;
 
 const Container = styled.div`
@@ -43,6 +43,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   min-height: 95vh;
+`;
+
+const Footer = styled.footer`
+  grid-column: 1 / -1;
 `;
 
 const Game = styled.li`
@@ -54,6 +58,7 @@ const Game = styled.li`
 const Grid = styled.div`
   display: grid;
   grid-gap: ${({ theme }) => theme.sizing.xl}rem;
+  max-width: 100rem;
   min-height: 0;
   padding: ${({ theme }) => theme.sizing.lg}rem;
 
@@ -74,7 +79,7 @@ const Half = styled.div`
   grid-gap: ${({ theme }) => theme.sizing.xl}rem;
 `;
 
-const Section = styled.section`
+const Section = styled(motion.section)`
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
     padding: ${({ noVerticalPadding, theme }) =>
       noVerticalPadding ? `0 ${theme.sizing.lg}` : theme.sizing.lg}rem;
@@ -83,13 +88,10 @@ const Section = styled.section`
 
 const SectionPanel = styled(Section)`
   background: ${({ theme }) => theme.colors.orange};
+  border-radius: ${({ theme }) => theme.sizing.lg}rem;
   overflow: hidden;
+  padding: ${({ theme }) => theme.sizing.lg}rem;
   position: relative;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
-    border-radius: ${({ theme }) => theme.sizing.lg}rem;
-    box-shadow: 20px 20px 60px #a94700, -20px -20px 60px #ef6300;
-  }
 `;
 
 const Schedule = styled.ul`
@@ -142,104 +144,141 @@ const TextSm = styled.p`
 
 const TextXs = styled(TextSm)`
   font-size: ${({ theme }) => theme.sizing.xs}rem;
-  padding-bottom: ${({ theme }) => theme.sizing.lg}rem;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}rem) {
-    padding-bottom: ${({ theme }) => theme.sizing.xl}rem;
-  }
+  margin: 0 auto;
 `;
 
-const Home = ({ progress, schedule, status }) => (
-  <Container>
-    <Grid>
-      <GridItem>
-        <Half>
-          <Section>
-            <TextLg>Is Texas back yet?</TextLg>
-            <TextSm>
-              2020 is a difficult season for Texas Football with a lot of
-              potential. Let’s see if we can get ten wins in only up to ten
-              regular season games and a postseason.
-            </TextSm>
-          </Section>
-          <SectionPanel>
-            <TextLg as="h2" textAlign="center">
-              {status}
-            </TextLg>
-            <Bar progress={progress} />
-          </SectionPanel>
-        </Half>
-      </GridItem>
-      <GridItem>
-        <Half>
-          <SectionPanel>
-            <TextMd>Do your part to keep the football season going.</TextMd>
-            <TextSm>
-              Wear a mask, social distance, and enjoy the games from the comfort
-              of your home. Don’t make exceptions around family and friends. We
-              can collectively help our neighbors, including Texas Football.
-              Check out{" "}
-              <Anchor
-                href="https://www.bmj.com/content/bmj/370/bmj.m3223/F3.large.jpg"
-                rel="noopener noreferrer"
-                target="_blank"
+const Home = ({ progress, schedule, status }) => {
+  const {
+    colors: { orange },
+  } = useContext(ThemeContext);
+  const sectionPanelProps = {
+    initial: {
+      boxShadow: `0px 0px -60px ${orange}, 0px 0px -60px ${orange}`,
+    },
+    animate: {
+      boxShadow: "20px 20px 60px #a94700, -20px -20px 60px #ef6300",
+    },
+  };
+
+  return (
+    <Container>
+      <Grid>
+        <GridItem>
+          <Half>
+            <Section>
+              <TextLg>Is Texas back yet?</TextLg>
+              <TextSm>
+                2020 is a difficult season for Texas Football with a lot of
+                potential. Let’s see if we can get ten wins in only up to ten
+                regular season games and a postseason.
+              </TextSm>
+            </Section>
+            <AnimatePresence>
+              <SectionPanel
+                {...sectionPanelProps}
+                key="status"
+                transition={{ duration: 1 }}
               >
-                this chart from MIT
-              </Anchor>{" "}
-              to assess the risk of different activities.
-            </TextSm>
-            <picture>
-              <source srcSet="static/stadium.webp" type="image/webp" />
-              <source srcSet="static/stadium.png" type="image/png" />
-              <Stadium src="static/stadium.png" alt="football stadium" />
-            </picture>
-          </SectionPanel>
-          <Section noVerticalPadding>
-            <Schedule>
-              {schedule.map(
-                ({
-                  datetime,
-                  id,
-                  isFinished,
-                  isTimeScheduled,
-                  isWin,
-                  opponent,
-                  pointsOpponent,
-                  pointsTexas,
-                }) => (
-                  <Game key={id}>
-                    <span>{opponent}</span>
-                    <span>
-                      {isFinished
-                        ? `${
-                            isWin ? "W" : "L"
-                          } ${pointsTexas}-${pointsOpponent}`
-                        : isTimeScheduled
-                        ? format(parseISO(datetime), "M/d, h:mmaaaa")
-                        : format(parseISO(datetime.substring(0, 10)), "M/d")}
-                    </span>
-                  </Game>
-                )
-              )}
-            </Schedule>
-          </Section>
-        </Half>
-      </GridItem>
-    </Grid>
-    <TextXs textAlign="center">
-      Made for the sake of a<br />
-      meme by{" "}
-      <Anchor
-        href="https://twitter.com/seejamescode"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        James Y Rauhut
-      </Anchor>
-      .
-    </TextXs>
-  </Container>
-);
+                <TextLg as="h2" textAlign="center">
+                  {status}
+                </TextLg>
+
+                <BarContainer progress={`${progress}%`}>
+                  <AnimatePresence>
+                    <Bar
+                      initial={{
+                        width: `${progress - 15}%`,
+                      }}
+                      animate={{
+                        width: `${progress}%`,
+                      }}
+                      key="bar"
+                      transition={{ delay: 0.5, duration: 0.5 }}
+                      progress={progress}
+                    />
+                  </AnimatePresence>
+                </BarContainer>
+              </SectionPanel>
+            </AnimatePresence>
+          </Half>
+        </GridItem>
+        <GridItem>
+          <Half>
+            <SectionPanel
+              {...sectionPanelProps}
+              key="safety"
+              transition={{ delay: 0.5, duration: 1 }}
+            >
+              <TextMd>Do your part to keep the football season going.</TextMd>
+              <TextSm>
+                Wear a mask, social distance, and enjoy the games from the
+                comfort of your home. Don’t make exceptions around family and
+                friends. We can collectively help our neighbors, including Texas
+                Football. Check out{" "}
+                <Anchor
+                  href="https://www.bmj.com/content/bmj/370/bmj.m3223/F3.large.jpg"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  this chart from MIT
+                </Anchor>{" "}
+                to assess the risk of different activities.
+              </TextSm>
+              <picture>
+                <source srcSet="static/stadium.webp" type="image/webp" />
+                <source srcSet="static/stadium.png" type="image/png" />
+                <Stadium src="static/stadium.png" alt="football stadium" />
+              </picture>
+            </SectionPanel>
+            <Section noVerticalPadding>
+              <Schedule>
+                {schedule.map(
+                  ({
+                    datetime,
+                    id,
+                    isFinished,
+                    isTimeScheduled,
+                    isWin,
+                    opponent,
+                    pointsOpponent,
+                    pointsTexas,
+                  }) => (
+                    <Game key={id}>
+                      <span>{opponent}</span>
+                      <span>
+                        {isFinished
+                          ? `${
+                              isWin ? "W" : "L"
+                            } ${pointsTexas}-${pointsOpponent}`
+                          : isTimeScheduled
+                          ? format(parseISO(datetime), "M/d, h:mmaaaa")
+                          : format(parseISO(datetime.substring(0, 10)), "M/d")}
+                      </span>
+                    </Game>
+                  )
+                )}
+              </Schedule>
+            </Section>
+          </Half>
+        </GridItem>
+        <Footer>
+          <TextXs textAlign="center">
+            Made for the sake of a<br />
+            meme by{" "}
+            <Anchor
+              href="https://twitter.com/seejamescode"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              James Y Rauhut
+            </Anchor>
+            .
+          </TextXs>
+        </Footer>
+      </Grid>
+    </Container>
+  );
+};
 
 export async function getStaticProps() {
   const resSchedule = await fetch(
@@ -300,7 +339,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      progress: `${wins * 10}%`,
+      progress: wins * 10,
       schedule,
       status,
     },
