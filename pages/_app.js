@@ -6,7 +6,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 const theme = {
   breakpoints: {
     md: 40,
-    lg: 60,
+    lg: 80,
   },
   colors: {
     orange: "#c75300",
