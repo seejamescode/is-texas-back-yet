@@ -297,14 +297,18 @@ export async function getStaticProps() {
       venue,
     }) => {
       const isHome = home_team === "Texas";
+      const isWin = isHome
+        ? away_points < home_points
+        : away_points > home_points;
+      const opponent = isHome ? away_team : home_team;
 
       return {
         datetime: start_date,
         id,
         isTimeScheduled: !start_time_tbd,
         isFinished: home_points !== null && away_points !== null,
-        isWin: isHome ? away_points < home_points : away_points > home_points,
-        opponent: isHome ? away_team : home_team,
+        isWin,
+        opponent: opponent === "Oklahoma" && isWin ? "OU Sucks" : opponent,
         pointsOpponent: isHome ? away_points : home_points,
         pointsTexas: isHome ? home_points : away_points,
         venue,
