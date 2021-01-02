@@ -80,9 +80,15 @@ const Half = styled.div`
 `;
 
 const Section = styled(motion.section)`
+  grid-row: ${({ firstOnMobile }) => (firstOnMobile ? 1 : "unset")};
+
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
     padding: ${({ noVerticalPadding, theme }) =>
       noVerticalPadding ? `0 ${theme.sizing.lg}` : theme.sizing.lg}rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}rem) {
+    grid-row: unset;
   }
 `;
 
@@ -168,9 +174,9 @@ const Home = ({ progress, schedule, status }) => {
             <Section>
               <TextLg>Is Texas back yet?</TextLg>
               <TextSm>
-                2020 is a difficult season for Texas Football with a lot of
-                potential. Let’s see if we can get ten wins in only up to ten
-                regular season games and a postseason.
+                For Texas Football to truly be back, we must maintain ten wins
+                each season. Let’s see if we can reach that criteria. This is
+                pure science, so share with any mininformed colleagues.
               </TextSm>
             </Section>
             <AnimatePresence>
@@ -209,12 +215,12 @@ const Home = ({ progress, schedule, status }) => {
               key="safety"
               transition={{ delay: 0.5, duration: 1 }}
             >
-              <TextMd>Do your part to keep the football season going.</TextMd>
+              <TextMd>Do your part to bring football back to normal.</TextMd>
               <TextSm>
-                Wear a mask, social distance, and enjoy the games from the
-                comfort of your home. Don’t make exceptions around family and
-                friends. We can collectively help our neighbors, including Texas
-                Football. Check out{" "}
+                Wear a mask, social distance, and get vaccinated when possible.
+                Don’t make exceptions around family and friends. We can
+                collectively help our neighbors, including Texas Football. Check
+                out{" "}
                 <Anchor
                   href="https://www.bmj.com/content/bmj/370/bmj.m3223/F3.large.jpg"
                   rel="noopener noreferrer"
@@ -230,7 +236,7 @@ const Home = ({ progress, schedule, status }) => {
                 <Stadium src="static/stadium.png" alt="football stadium" />
               </picture>
             </SectionPanel>
-            <Section noVerticalPadding>
+            <Section firstOnMobile noVerticalPadding>
               <Schedule>
                 {schedule.map(
                   ({
@@ -282,39 +288,41 @@ const Home = ({ progress, schedule, status }) => {
 
 export async function getStaticProps() {
   const resSchedule = await fetch(
-    `https://api.collegefootballdata.com/games?year=2020&team=Texas`
+    `https://api.collegefootballdata.com/games?year=2020&team=Texas&seasonType=both`
   );
   const dataSchedule = await resSchedule.json();
-  const schedule = dataSchedule.map(
-    ({
-      away_points,
-      away_team,
-      home_points,
-      home_team,
-      id,
-      start_date,
-      start_time_tbd,
-      venue,
-    }) => {
-      const isHome = home_team === "Texas";
-      const isWin = isHome
-        ? away_points < home_points
-        : away_points > home_points;
-      const opponent = isHome ? away_team : home_team;
-
-      return {
-        datetime: start_date,
+  const schedule = dataSchedule
+    .map(
+      ({
+        away_points,
+        away_team,
+        home_points,
+        home_team,
         id,
-        isTimeScheduled: !start_time_tbd,
-        isFinished: home_points !== null && away_points !== null,
-        isWin,
-        opponent: opponent === "Oklahoma" && isWin ? "OU Sucks" : opponent,
-        pointsOpponent: isHome ? away_points : home_points,
-        pointsTexas: isHome ? home_points : away_points,
+        start_date,
+        start_time_tbd,
         venue,
-      };
-    }
-  );
+      }) => {
+        const isHome = home_team === "Texas";
+        const isWin = isHome
+          ? away_points < home_points
+          : away_points > home_points;
+        const opponent = isHome ? away_team : home_team;
+
+        return {
+          datetime: start_date,
+          id,
+          isTimeScheduled: !start_time_tbd,
+          isFinished: home_points !== null && away_points !== null,
+          isWin,
+          opponent: opponent === "Oklahoma" && isWin ? "OU Sucks" : opponent,
+          pointsOpponent: isHome ? away_points : home_points,
+          pointsTexas: isHome ? home_points : away_points,
+          venue,
+        };
+      }
+    )
+    .sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
 
   const wins = schedule.filter(({ isFinished, isWin }) => isFinished && isWin)
     .length;
@@ -322,11 +330,11 @@ export async function getStaticProps() {
     wins >= 10
       ? "Texas is back!"
       : wins === 9
-      ? "So, so, close!"
+      ? "So, so, close."
       : wins === 8
       ? "Almost..."
       : wins === 7
-      ? "Getting there."
+      ? "Not really."
       : wins === 6
       ? "Not yet."
       : wins === 5
