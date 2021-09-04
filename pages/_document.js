@@ -41,7 +41,7 @@ export default class MyDocument extends Document {
             name="description"
             content="Let's check if our Texas Longhorns are back..."
           />
-          <meta property="og:title" content="Is Texas back yet?" />
+          <meta property="og:title" content="Is Texas Back Yet?" />
           <meta
             property="og:description"
             content="Let's check if our Texas Longhorn’s football program is back..."
@@ -53,7 +53,7 @@ export default class MyDocument extends Document {
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://istexasbackyet.com" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Is Texas back yet?" />
+          <meta name="twitter:title" content="Is Texas Back Yet?" />
           <meta
             name="twitter:description"
             content="Let's check if our Texas Longhorns are back..."

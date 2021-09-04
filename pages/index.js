@@ -97,6 +97,7 @@ const SectionPanel = styled(Section)`
   border-radius: ${({ theme }) => theme.sizing.lg}rem;
   overflow: hidden;
   padding: ${({ theme }) => theme.sizing.lg}rem;
+  padding-bottom: ${({ theme }) => theme.sizing.lg}rem;
   position: relative;
 `;
 
@@ -172,11 +173,11 @@ const Home = ({ progress, schedule, status }) => {
         <GridItem>
           <Half>
             <Section>
-              <TextLg>Is Texas back yet?</TextLg>
+              <TextLg>Is Texas Back Yet?</TextLg>
               <TextSm>
                 For Texas Football to truly be back, we must maintain ten wins
-                each season. Let’s see if we can reach that criteria. This is
-                pure science, so share with any mininformed colleagues.
+                each season. Let’s see how far all gas, no brakes can take us.
+                This is pure science, so share with any mininformed colleagues.
               </TextSm>
             </Section>
             <AnimatePresence>
@@ -215,20 +216,16 @@ const Home = ({ progress, schedule, status }) => {
               key="safety"
               transition={{ delay: 0.5, duration: 1 }}
             >
-              <TextMd>Do your part to bring football back to normal.</TextMd>
               <TextSm>
-                Wear a mask, social distance, and get vaccinated when possible.
-                Don’t make exceptions around family and friends. We can
-                collectively help our neighbors, including Texas Football. Check
-                out{" "}
+                Get vaccinated to protect the season! We can collectively help
+                our neighbors, including Texas Football.{" "}
                 <Anchor
-                  href="https://www.bmj.com/content/bmj/370/bmj.m3223/F3.large.jpg"
+                  href="https://www.vaccines.gov/search/"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  this chart from MIT
-                </Anchor>{" "}
-                to assess the risk of different activities.
+                  Find a vaccine today.
+                </Anchor>
               </TextSm>
               <picture>
                 <source srcSet="static/stadium.webp" type="image/webp" />
@@ -257,7 +254,7 @@ const Home = ({ progress, schedule, status }) => {
                               isWin ? "W" : "L"
                             } ${pointsTexas}-${pointsOpponent}`
                           : isTimeScheduled
-                          ? format(parseISO(datetime), "M/d, h:mmaaaa")
+                          ? format(parseISO(datetime), "M/d, h:mmaaaaa'm'")
                           : format(parseISO(datetime.substring(0, 10)), "M/d")}
                       </span>
                     </Game>
@@ -288,8 +285,16 @@ const Home = ({ progress, schedule, status }) => {
 
 export async function getStaticProps() {
   const resSchedule = await fetch(
-    `https://api.collegefootballdata.com/games?year=2020&team=Texas&seasonType=both`
-  );
+    `https://api.collegefootballdata.com/games?year=2021&team=Texas&seasonType=both`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.COLLEGE_FOOTBALL_API_KEY}`,
+      },
+    }
+  ).catch((error) => {
+    // Your error is here!
+    console.log(error);
+  });
   const dataSchedule = await resSchedule.json();
   const schedule = dataSchedule
     .map(
@@ -324,8 +329,9 @@ export async function getStaticProps() {
     )
     .sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
 
-  const wins = schedule.filter(({ isFinished, isWin }) => isFinished && isWin)
-    .length;
+  const wins = schedule.filter(
+    ({ isFinished, isWin }) => isFinished && isWin
+  ).length;
   const status =
     wins >= 10
       ? "Texas is back!"

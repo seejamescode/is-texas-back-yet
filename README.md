@@ -1,4 +1,4 @@
-# [Is Texas back yet?](http://istexasbackyet.com)
+# [Is Texas Back Yet?](http://istexasbackyet.com)
 
 Let's check if our Texas Longhorns are back...
 
