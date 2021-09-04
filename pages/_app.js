@@ -1,6 +1,5 @@
 import Head from "next/head";
-import Router from "next/router";
-import withGA from "next-ga";
+import PlausibleProvider from "next-plausible";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const theme = {
@@ -75,16 +74,18 @@ const GlobalStyle = createGlobalStyle`
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <>
-        <GlobalStyle />
-        <Head>
-          <title>Is Texas back yet?</title>
-        </Head>
-        <Component {...pageProps} />
-      </>
-    </ThemeProvider>
+    <PlausibleProvider domain="istexasbackyet.com">
+      <ThemeProvider theme={theme}>
+        <>
+          <GlobalStyle />
+          <Head>
+            <title>Is Texas back yet?</title>
+          </Head>
+          <Component {...pageProps} />
+        </>
+      </ThemeProvider>
+    </PlausibleProvider>
   );
 }
 
-export default withGA("UA-43808769-11", Router)(MyApp);
+export default MyApp;
