@@ -22,7 +22,7 @@
     "start": "npm run dev",
     "test": "true"
   },
-  "author": "james@seejamescode.com",
+  "author": "james@seejamesdesign.com",
   "license": "MIT",
   "devDependencies": {
     "babel-plugin-styled-components": "^1.11.1"

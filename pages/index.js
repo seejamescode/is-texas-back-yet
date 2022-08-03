@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { format, parseISO } from "date-fns";
+import { format, getYear, isBefore, parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import styled, { ThemeContext } from "styled-components";
 
@@ -29,6 +29,8 @@ const BarContainer = styled.div`
   position: relative;
 
   :after {
+    color: ${({ isZero, theme }) =>
+      isZero ? theme.colors.orange : theme.colors.white};
     content: "${({ progress }) => progress}";
     left: ${({ theme }) => theme.sizing.sm}rem;
     height: 100%;
@@ -109,16 +111,12 @@ const Schedule = styled.ul`
 
 const Stadium = styled.img`
   bottom: 0;
-  display: none;
+  display: flex;
   left: 0;
   opacity: 10%;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   width: 100%;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
-    display: flex;
-  }
 `;
 
 const TextLg = styled.h1`
@@ -133,11 +131,12 @@ const TextLg = styled.h1`
 `;
 
 const TextMd = styled.h2`
-  font-size: ${({ theme }) => theme.sizing.md}rem;
+  font-size: ${({ theme }) => theme.sizing.sm}rem;
   margin-top: 0;
+  text-align: center;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
-    font-size: ${({ theme }) => theme.sizing.lg}rem;
+    font-size: ${({ theme }) => theme.sizing.sm}rem;
   }
 `;
 
@@ -154,7 +153,7 @@ const TextXs = styled(TextSm)`
   margin: 0 auto;
 `;
 
-const Home = ({ progress, schedule, status }) => {
+const Home = ({ progress, schedule, scheduleYear, status }) => {
   const {
     colors: { orange },
   } = useContext(ThemeContext);
@@ -172,12 +171,17 @@ const Home = ({ progress, schedule, status }) => {
       <Grid>
         <GridItem>
           <Half>
-            <Section>
+            <Section noVerticalPadding>
+              <picture>
+                <source srcSet="static/stadium.webp" type="image/webp" />
+                <source srcSet="static/stadium.png" type="image/png" />
+                <Stadium src="static/stadium.png" alt="football stadium" />
+              </picture>
               <TextLg>Is Texas Back Yet?</TextLg>
               <TextSm>
                 For Texas Football to truly be back, we must maintain ten wins
-                each season. Let’s see how far all gas, no brakes can take us.
-                This is pure science, so share with any mininformed colleagues.
+                each season. This is pure science, so share with any mininformed
+                colleagues.
               </TextSm>
             </Section>
             <AnimatePresence>
@@ -190,7 +194,7 @@ const Home = ({ progress, schedule, status }) => {
                   {status}
                 </TextLg>
 
-                <BarContainer progress={`${progress}%`}>
+                <BarContainer isZero={progress == 0} progress={`${progress}%`}>
                   <AnimatePresence>
                     <Bar
                       initial={{
@@ -211,35 +215,15 @@ const Home = ({ progress, schedule, status }) => {
         </GridItem>
         <GridItem>
           <Half>
-            <SectionPanel
-              {...sectionPanelProps}
-              key="safety"
-              transition={{ delay: 0.5, duration: 1 }}
-            >
-              <TextSm>
-                Get vaccinated to protect the season! We can collectively help
-                our neighbors, including Texas Football.{" "}
-                <Anchor
-                  href="https://www.vaccines.gov/search/"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Find a vaccine today.
-                </Anchor>
-              </TextSm>
-              <picture>
-                <source srcSet="static/stadium.webp" type="image/webp" />
-                <source srcSet="static/stadium.png" type="image/png" />
-                <Stadium src="static/stadium.png" alt="football stadium" />
-              </picture>
-            </SectionPanel>
             <Section firstOnMobile noVerticalPadding>
               <Schedule>
+                <TextMd>{scheduleYear} Longhorn Season</TextMd>
                 {schedule.map(
                   ({
                     datetime,
                     id,
                     isFinished,
+                    isHome,
                     isTimeScheduled,
                     isWin,
                     opponent,
@@ -247,7 +231,10 @@ const Home = ({ progress, schedule, status }) => {
                     pointsTexas,
                   }) => (
                     <Game key={id}>
-                      <span>{opponent}</span>
+                      <span>
+                        {isHome ? "" : "@ "}
+                        {opponent}
+                      </span>
                       <span>
                         {isFinished
                           ? `${
@@ -269,7 +256,7 @@ const Home = ({ progress, schedule, status }) => {
             Made for the sake of a<br />
             meme by{" "}
             <Anchor
-              href="https://twitter.com/seejamescode"
+              href="https://seejamesdesign.com"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -284,8 +271,12 @@ const Home = ({ progress, schedule, status }) => {
 };
 
 export async function getStaticProps() {
+  const year = getYear(new Date());
+  const scheduleYear = isBefore(new Date(), new Date(year, 7, 1))
+    ? year - 1
+    : year;
   const resSchedule = await fetch(
-    `https://api.collegefootballdata.com/games?year=2021&team=Texas&seasonType=both`,
+    `https://api.collegefootballdata.com/games?year=${scheduleYear}&team=Texas&seasonType=both`,
     {
       headers: {
         Authorization: `Bearer ${process.env.COLLEGE_FOOTBALL_API_KEY}`,
@@ -319,6 +310,7 @@ export async function getStaticProps() {
           id,
           isTimeScheduled: !start_time_tbd,
           isFinished: home_points !== null && away_points !== null,
+          isHome,
           isWin,
           opponent: opponent === "Oklahoma" && isWin ? "OU Sucks" : opponent,
           pointsOpponent: isHome ? away_points : home_points,
@@ -359,6 +351,7 @@ export async function getStaticProps() {
     props: {
       progress: wins * 10,
       schedule,
+      scheduleYear,
       status,
     },
     revalidate: 300,

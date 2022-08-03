@@ -62,7 +62,6 @@ export default class MyDocument extends Document {
             name="twitter:image"
             content="https://istexasbackyet.com/static/thumbnail-title.png"
           />
-          <meta name="twitter:creator" content="@seejamescode" />
           <link
             rel="apple-touch-icon"
             sizes="57x57"
