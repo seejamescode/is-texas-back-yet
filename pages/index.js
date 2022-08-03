@@ -180,7 +180,7 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
               <TextLg>Is Texas Back Yet?</TextLg>
               <TextSm>
                 For Texas Football to truly be back, we must maintain ten wins
-                each season. This is pure science, so share with any mininformed
+                each season. This is pure science, so share with any misinformed
                 colleagues.
               </TextSm>
             </Section>
