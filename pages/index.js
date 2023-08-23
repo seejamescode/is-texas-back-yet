@@ -3,6 +3,8 @@ import { format, getYear, isBefore, parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import styled, { ThemeContext } from "styled-components";
 import Image from "next/image";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 
 const Anchor = styled.a`
   color: inherit;
@@ -97,6 +99,42 @@ const ImageContainer = styled.div`
     margin-top: -3rem;
     transform: translateY(6%);
   }
+`;
+
+const PleaseWear = styled.a`
+  background: #3c486b;
+  background: linear-gradient(45deg, #3c486b, #516090);
+  border-radius: 1rem;
+  display: flex;
+  gap: 2rem;
+  margin: auto;
+  margin-bottom: 1rem;
+  max-width: 20rem;
+  padding: 1rem 2rem;
+  position: relative;
+  text-decoration: none;
+  z-index: 1;
+
+  * {
+    color: #f0f0f0;
+    font-size: 1rem;
+    margin: 0;
+    text-align: left !important;
+  }
+
+  .carousel-root {
+    flex: 1;
+    transform: scale(1.75);
+    transform-origin: center center;
+  }
+`;
+
+const PleaseWearText = styled.div`
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
 `;
 
 const Section = styled(motion.section)`
@@ -301,18 +339,46 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
           </Half>
         </GridItem>
         <Footer>
-          <TextXs textAlign="center">
-            Made for the sake of a<br />
-            meme by{" "}
-            <Anchor
-              href="https://seejamesdesign.com"
-              rel="noopener noreferrer"
-              target="_blank"
+          <PleaseWear href="https://pleasewear.co" target="_blank">
+            <Carousel
+              autoPlay
+              infiniteLoop
+              interval={4000}
+              showArrows={false}
+              showStatus={false}
+              showIndicators={false}
+              showThumbs={false}
+              transitionTime={2000}
             >
-              James Y Rauhut
-            </Anchor>
-            .
-          </TextXs>
+              <div>
+                <img src="/static/please/1.png" />
+              </div>
+              <div>
+                <img src="/static/please/5.png" />
+              </div>
+              <div>
+                <img src="/static/please/2.png" />
+              </div>
+              <div>
+                <img src="/static/please/6.png" />
+              </div>
+              <div>
+                <img src="/static/please/3.png" />
+              </div>
+              <div>
+                <img src="/static/please/4.png" />
+              </div>
+            </Carousel>
+            <PleaseWearText>
+              <Image
+                alt="please wear .co"
+                src="/static/please/please-wear-white.png"
+                height={304}
+                width={2188}
+              />
+              <p>Sustainable styles to provoke politely. →</p>
+            </PleaseWearText>
+          </PleaseWear>
         </Footer>
       </Grid>
     </Container>
