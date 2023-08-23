@@ -8,14 +8,14 @@ const theme = {
     lg: 80,
   },
   colors: {
-    orange: "#c75300",
-    white: "#fff",
+    orange: "#fff",
+    white: "#c75300",
   },
   sizing: {
     xs: 0.875,
     sm: 1,
     md: 1.5,
-    lg: 2,
+    lg: 2.4,
     xl: 4,
   },
 };

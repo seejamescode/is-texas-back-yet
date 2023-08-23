@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { format, getYear, isBefore, parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import styled, { ThemeContext } from "styled-components";
+import Image from "next/image";
 
 const Anchor = styled.a`
   color: inherit;
@@ -21,16 +22,17 @@ const Bar = styled(motion.div)`
 
 const BarContainer = styled.div`
   border-radius: ${({ theme }) => theme.sizing.lg}rem;
-  background: linear-gradient(270deg, #ffffff, #e6e6e6);
+  background: linear-gradient(270deg, #e9e9e9, #e6e6e6);
   height: ${({ theme }) => theme.sizing.xl}rem;
-  margin-top: ${({ theme }) => theme.sizing.lg}rem;
+  margin-top: ${({ theme }) => theme.sizing.sm}rem;
   overflow: hidden;
   width: 100%;
   position: relative;
+  z-index: 1;
 
   :after {
     color: ${({ isZero, theme }) =>
-      isZero ? theme.colors.orange : theme.colors.white};
+      isZero ? theme.colors.white : theme.colors.orange};
     content: "${({ progress }) => progress}";
     left: ${({ theme }) => theme.sizing.sm}rem;
     height: 100%;
@@ -62,7 +64,8 @@ const Grid = styled.div`
   grid-gap: ${({ theme }) => theme.sizing.xl}rem;
   max-width: 100rem;
   min-height: 0;
-  padding: ${({ theme }) => theme.sizing.lg}rem;
+  padding: ${({ theme }) => theme.sizing.xl}rem
+    ${({ theme }) => theme.sizing.sm}rem;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}rem) {
     grid-template-columns: 2fr 1fr;
@@ -73,15 +76,33 @@ const Grid = styled.div`
 const GridItem = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
     grid-column: ${({ gridColumn }) => gridColumn};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 `;
 
 const Half = styled.div`
   display: grid;
-  grid-gap: ${({ theme }) => theme.sizing.xl}rem;
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  margin-top: -${({ theme }) => theme.sizing.lg}rem;
+  max-width: ${({ theme }) => theme.breakpoints.md}rem;
+  padding: 0 ${({ theme }) => theme.sizing.sm}rem;
+  transform: translateY(6%);
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}rem) {
+    margin-top: -3rem;
+    transform: translateY(6%);
+  }
 `;
 
 const Section = styled(motion.section)`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   grid-row: ${({ firstOnMobile }) => (firstOnMobile ? 1 : "unset")};
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
@@ -98,8 +119,8 @@ const SectionPanel = styled(Section)`
   background: ${({ theme }) => theme.colors.orange};
   border-radius: ${({ theme }) => theme.sizing.lg}rem;
   overflow: hidden;
-  padding: ${({ theme }) => theme.sizing.lg}rem;
-  padding-bottom: ${({ theme }) => theme.sizing.lg}rem;
+  padding: ${({ theme }) => theme.sizing.md}rem
+    ${({ theme }) => theme.sizing.sm}rem;
   position: relative;
 `;
 
@@ -107,6 +128,7 @@ const Schedule = styled.ul`
   list-style: none;
   margin-top: 0;
   padding-left: 0;
+  width: 100%;
 `;
 
 const Stadium = styled.img`
@@ -121,6 +143,7 @@ const Stadium = styled.img`
 
 const TextLg = styled.h1`
   font-size: ${({ theme }) => theme.sizing.lg}rem;
+  line-height: 1;
   margin-bottom: ${({ theme }) => theme.sizing.sm}rem;
   margin-top: 0;
   text-align: ${({ textAlign }) => textAlign};
@@ -151,6 +174,7 @@ const TextSm = styled.p`
 const TextXs = styled(TextSm)`
   font-size: ${({ theme }) => theme.sizing.xs}rem;
   margin: 0 auto;
+  opacity: 75%;
 `;
 
 const Home = ({ progress, schedule, scheduleYear, status }) => {
@@ -162,27 +186,43 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
       boxShadow: `0px 0px -60px ${orange}, 0px 0px -60px ${orange}`,
     },
     animate: {
-      boxShadow: "20px 20px 60px #a94700, -20px -20px 60px #ef6300",
+      boxShadow: "20px 20px 60px #cfcfcf, -20px -20px 60px #cacaca",
     },
   };
 
   return (
     <Container>
+      <picture>
+        <source srcSet="static/stadium.webp" type="image/webp" />
+        <source srcSet="static/stadium.png" type="image/png" />
+        <Stadium src="static/stadium.png" alt="football stadium" />
+      </picture>
       <Grid>
         <GridItem>
           <Half>
-            <Section noVerticalPadding>
-              <picture>
-                <source srcSet="static/stadium.webp" type="image/webp" />
-                <source srcSet="static/stadium.png" type="image/png" />
-                <Stadium src="static/stadium.png" alt="football stadium" />
-              </picture>
+            <Section noVerticalPadding style={{ zIndex: 1 }}>
               <TextLg>Is Texas Back Yet?</TextLg>
-              <TextSm>
+              <TextLg
+                as="h4"
+                style={{
+                  fontSize: "2rem",
+                  marginTop: "-.25rem",
+                }}
+              >
+                <i>Big 12 Farewell Tour</i>
+              </TextLg>
+              <ImageContainer>
+                <Image
+                  src="/static/big-12-farewell-tour.png"
+                  width={4689}
+                  height={2374}
+                />
+              </ImageContainer>
+              {/* <TextSm>
                 For Texas Football to truly be back, we must maintain ten wins
                 each season. This is pure science, so share with any misinformed
                 colleagues.
-              </TextSm>
+              </TextSm> */}
             </Section>
             <AnimatePresence>
               <SectionPanel
@@ -193,8 +233,10 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
                 <TextLg as="h2" textAlign="center">
                   {status}
                 </TextLg>
-
-                <BarContainer isZero={progress == 0} progress={`${progress}%`}>
+                <BarContainer
+                  isZero={progress == 0}
+                  progress={`${progress} wins`}
+                >
                   <AnimatePresence>
                     <Bar
                       initial={{
@@ -229,12 +271,19 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
                     opponent,
                     pointsOpponent,
                     pointsTexas,
+                    record,
                   }) => (
                     <Game key={id}>
-                      <span>
-                        {isHome ? "" : "@ "}
-                        {opponent}
-                      </span>
+                      <div>
+                        <span>
+                          {isHome ? "" : "@ "}
+                          <span
+                            dangerouslySetInnerHTML={{ __html: opponent }}
+                          />
+                        </span>
+                        <br />
+                        <TextXs>{record.join("-")}</TextXs>
+                      </div>
                       <span>
                         {isFinished
                           ? `${
@@ -272,7 +321,7 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
 
 export async function getStaticProps() {
   const year = getYear(new Date());
-  const scheduleYear = isBefore(new Date(), new Date(year, 7, 1))
+  const scheduleYear = isBefore(new Date(), new Date(year, 6, 1))
     ? year - 1
     : year;
   const resSchedule = await fetch(
@@ -287,9 +336,10 @@ export async function getStaticProps() {
     console.log(error);
   });
   const dataSchedule = await resSchedule.json();
-  const schedule = dataSchedule
+
+  const promiseSchedule = dataSchedule
     .map(
-      ({
+      async ({
         away_points,
         away_team,
         home_points,
@@ -305,6 +355,19 @@ export async function getStaticProps() {
           : away_points > home_points;
         const opponent = isHome ? away_team : home_team;
 
+        const resRecord = await fetch(
+          `https://api.collegefootballdata.com/teams/matchup?team1=Texas&team2=${opponent}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.COLLEGE_FOOTBALL_API_KEY}`,
+            },
+          }
+        ).catch((error) => {
+          // Your error is here!
+          console.log(error);
+        });
+        const dataRecord = await resRecord.json();
+
         return {
           datetime: start_date,
           id,
@@ -312,14 +375,37 @@ export async function getStaticProps() {
           isFinished: home_points !== null && away_points !== null,
           isHome,
           isWin,
-          opponent: opponent === "Oklahoma" && isWin ? "OU Sucks" : opponent,
+          opponent:
+            opponent === "Baylor"
+              ? "Bye Bye <strong>Baylor</strong>"
+              : opponent === "Kansas"
+              ? "Call us, <strong>Kansas</strong>"
+              : opponent === "Oklahoma" && isWin
+              ? "<strong>OU</strong> still sucks"
+              : opponent === "Oklahoma"
+              ? "y<strong>OU</strong> and me 4ever"
+              : opponent === "Houston"
+              ? "Hi and bye <strong>Houston</strong>"
+              : opponent === "BYU"
+              ? "BYE <strong>BYU</strong>"
+              : opponent === "Kansas State"
+              ? "Kiss <strong>Kansas State</strong> goodbye"
+              : opponent === "TCU"
+              ? "Write you, <strong>TCU</strong>"
+              : opponent === "Iowa State"
+              ? "I-won't-miss <strong>Iowa State</strong>"
+              : opponent === "Texas Tech"
+              ? "Take care, <strong>Texas Tech</strong>"
+              : `<strong>${opponent}</strong>`,
           pointsOpponent: isHome ? away_points : home_points,
           pointsTexas: isHome ? home_points : away_points,
+          record: [dataRecord.team1Wins, dataRecord.team2Wins, dataRecord.ties],
           venue,
         };
       }
     )
     .sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+  const schedule = await Promise.all(promiseSchedule);
 
   const wins = schedule.filter(
     ({ isFinished, isWin }) => isFinished && isWin
@@ -346,7 +432,6 @@ export async function getStaticProps() {
       : wins === 1
       ? "Naw."
       : "No.";
-
   return {
     props: {
       progress: wins * 10,
