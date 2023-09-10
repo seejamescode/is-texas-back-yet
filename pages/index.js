@@ -273,7 +273,7 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
                 </TextLg>
                 <BarContainer
                   isZero={progress == 0}
-                  progress={`${progress} wins`}
+                  progress={`${progress}% back`}
                 >
                   <AnimatePresence>
                     <Bar
@@ -442,7 +442,9 @@ export async function getStaticProps() {
           isHome,
           isWin,
           opponent:
-            opponent === "Baylor"
+            opponent === "Alabama" && isWin
+              ? "We <s>Want</s> <i>Beat</i> <strong>Bama</strong>"
+              : opponent === "Baylor"
               ? "Bye Bye <strong>Baylor</strong>"
               : opponent === "Kansas"
               ? "Call us, <strong>Kansas</strong>"
