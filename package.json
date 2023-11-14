@@ -7,7 +7,9 @@
     "url": "https://github.com/seejamescode/is-texas-back-yet.git"
   },
   "dependencies": {
+    "@splinetool/react-spline": "^2.2.6",
     "date-fns": "^2.23.0",
+    "emojisplosion": "^2.6.1",
     "framer-motion": "^4.1.17",
     "next": "^12.3.4",
     "next-plausible": "^3.11.1",

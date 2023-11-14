@@ -1,16 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { format, getYear, isBefore, parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import styled, { ThemeContext } from "styled-components";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-
-const Anchor = styled.a`
-  color: inherit;
-  font-weight: 600;
-  text-decoration: none;
-`;
+import Back from "../components/back";
 
 const Bar = styled(motion.div)`
   background: linear-gradient(315deg, #e2ac6b 0%, #cba36d 74%);
@@ -215,10 +210,11 @@ const TextXs = styled(TextSm)`
   opacity: 75%;
 `;
 
-const Home = ({ progress, schedule, scheduleYear, status }) => {
+const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
   const {
     colors: { orange },
   } = useContext(ThemeContext);
+
   const sectionPanelProps = {
     initial: {
       boxShadow: `0px 0px -60px ${orange}, 0px 0px -60px ${orange}`,
@@ -229,159 +225,165 @@ const Home = ({ progress, schedule, scheduleYear, status }) => {
   };
 
   return (
-    <Container>
-      <picture>
-        <source srcSet="static/stadium.webp" type="image/webp" />
-        <source srcSet="static/stadium.png" type="image/png" />
-        <Stadium src="static/stadium.png" alt="football stadium" />
-      </picture>
-      <Grid>
-        <GridItem>
-          <Half>
-            <Section noVerticalPadding style={{ zIndex: 1 }}>
-              <TextLg>Is Texas Back Yet?</TextLg>
-              <TextLg
-                as="h4"
-                style={{
-                  fontSize: "2rem",
-                  marginTop: "-.25rem",
-                }}
-              >
-                <i>Big 12 Farewell Tour</i>
-              </TextLg>
-              <ImageContainer>
-                <Image
-                  src="/static/big-12-farewell-tour.png"
-                  width={4689}
-                  height={2374}
-                />
-              </ImageContainer>
-              {/* <TextSm>
+    <>
+      <Container>
+        <picture>
+          <source srcSet="static/stadium.webp" type="image/webp" />
+          <source srcSet="static/stadium.png" type="image/png" />
+          <Stadium src="static/stadium.png" alt="football stadium" />
+        </picture>
+        <Grid>
+          <GridItem>
+            <Half>
+              <Section noVerticalPadding style={{ zIndex: 1 }}>
+                <TextLg>Is Texas Back Yet?</TextLg>
+                <TextLg
+                  as="h4"
+                  style={{
+                    fontSize: "2rem",
+                    marginTop: "-.25rem",
+                  }}
+                >
+                  <i>Big 12 Farewell Tour</i>
+                </TextLg>
+                <ImageContainer>
+                  <Image
+                    src="/static/big-12-farewell-tour.png"
+                    width={4689}
+                    height={2374}
+                  />
+                </ImageContainer>
+                {/* <TextSm>
                 For Texas Football to truly be back, we must maintain ten wins
                 each season. This is pure science, so share with any misinformed
                 colleagues.
               </TextSm> */}
-            </Section>
-            <AnimatePresence>
-              <SectionPanel
-                {...sectionPanelProps}
-                key="status"
-                transition={{ duration: 1 }}
-              >
-                <TextLg as="h2" textAlign="center">
-                  {status}
-                </TextLg>
-                <BarContainer
-                  isZero={progress == 0}
-                  progress={`${progress}% back`}
+              </Section>
+              <AnimatePresence>
+                <SectionPanel
+                  {...sectionPanelProps}
+                  key="status"
+                  transition={{ duration: 1 }}
                 >
-                  <AnimatePresence>
-                    <Bar
-                      initial={{
-                        width: `${progress - 15}%`,
-                      }}
-                      animate={{
-                        width: `${progress}%`,
-                      }}
-                      key="bar"
-                      transition={{ delay: 0.5, duration: 0.5 }}
-                      progress={progress}
-                    />
-                  </AnimatePresence>
-                </BarContainer>
-              </SectionPanel>
-            </AnimatePresence>
-          </Half>
-        </GridItem>
-        <GridItem>
-          <Half>
-            <Section firstOnMobile noVerticalPadding>
-              <Schedule>
-                <TextMd>{scheduleYear} Longhorn Season</TextMd>
-                {schedule.map(
-                  ({
-                    datetime,
-                    id,
-                    isFinished,
-                    isHome,
-                    isTimeScheduled,
-                    isWin,
-                    opponent,
-                    pointsOpponent,
-                    pointsTexas,
-                    record,
-                  }) => (
-                    <Game key={id}>
-                      <div>
+                  <TextLg as="h2" textAlign="center">
+                    {status}
+                  </TextLg>
+                  <BarContainer
+                    isZero={progress == 0}
+                    progress={`${progress}% back`}
+                  >
+                    <AnimatePresence>
+                      <Bar
+                        initial={{
+                          width: `${progress - 15}%`,
+                        }}
+                        animate={{
+                          width: `${progress}%`,
+                        }}
+                        key="bar"
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                        progress={progress}
+                      />
+                    </AnimatePresence>
+                  </BarContainer>
+                </SectionPanel>
+              </AnimatePresence>
+            </Half>
+          </GridItem>
+          <GridItem>
+            <Half>
+              <Section firstOnMobile noVerticalPadding>
+                <Schedule>
+                  <TextMd>{scheduleYear} Longhorn Season</TextMd>
+                  {schedule.map(
+                    ({
+                      datetime,
+                      id,
+                      isFinished,
+                      isHome,
+                      isTimeScheduled,
+                      isWin,
+                      opponent,
+                      pointsOpponent,
+                      pointsTexas,
+                      record,
+                    }) => (
+                      <Game key={id}>
+                        <div>
+                          <span>
+                            {isHome ? "" : "@ "}
+                            <span
+                              dangerouslySetInnerHTML={{ __html: opponent }}
+                            />
+                          </span>
+                          <br />
+                          <TextXs>{record.join("-")}</TextXs>
+                        </div>
                         <span>
-                          {isHome ? "" : "@ "}
-                          <span
-                            dangerouslySetInnerHTML={{ __html: opponent }}
-                          />
+                          {isFinished
+                            ? `${
+                                isWin ? "W" : "L"
+                              } ${pointsTexas}-${pointsOpponent}`
+                            : isTimeScheduled
+                            ? format(parseISO(datetime), "M/d, h:mmaaaaa'm'")
+                            : format(
+                                parseISO(datetime.substring(0, 10)),
+                                "M/d"
+                              )}
                         </span>
-                        <br />
-                        <TextXs>{record.join("-")}</TextXs>
-                      </div>
-                      <span>
-                        {isFinished
-                          ? `${
-                              isWin ? "W" : "L"
-                            } ${pointsTexas}-${pointsOpponent}`
-                          : isTimeScheduled
-                          ? format(parseISO(datetime), "M/d, h:mmaaaaa'm'")
-                          : format(parseISO(datetime.substring(0, 10)), "M/d")}
-                      </span>
-                    </Game>
-                  )
-                )}
-              </Schedule>
-            </Section>
-          </Half>
-        </GridItem>
-        <Footer>
-          <PleaseWear href="https://pleasewear.co" target="_blank">
-            <Carousel
-              autoPlay
-              infiniteLoop
-              interval={4000}
-              showArrows={false}
-              showStatus={false}
-              showIndicators={false}
-              showThumbs={false}
-              transitionTime={2000}
-            >
-              <div>
-                <img src="/static/please/1.png" />
-              </div>
-              <div>
-                <img src="/static/please/5.png" />
-              </div>
-              <div>
-                <img src="/static/please/2.png" />
-              </div>
-              <div>
-                <img src="/static/please/6.png" />
-              </div>
-              <div>
-                <img src="/static/please/3.png" />
-              </div>
-              <div>
-                <img src="/static/please/4.png" />
-              </div>
-            </Carousel>
-            <PleaseWearText>
-              <Image
-                alt="please wear .co"
-                src="/static/please/please-wear-white.png"
-                height={304}
-                width={2188}
-              />
-              <p>Sustainable styles to provoke politely. →</p>
-            </PleaseWearText>
-          </PleaseWear>
-        </Footer>
-      </Grid>
-    </Container>
+                      </Game>
+                    )
+                  )}
+                </Schedule>
+              </Section>
+            </Half>
+          </GridItem>
+          <Footer>
+            <PleaseWear href="https://pleasewear.co" target="_blank">
+              <Carousel
+                autoPlay
+                infiniteLoop
+                interval={4000}
+                showArrows={false}
+                showStatus={false}
+                showIndicators={false}
+                showThumbs={false}
+                transitionTime={2000}
+              >
+                <div>
+                  <img src="/static/please/1.png" />
+                </div>
+                <div>
+                  <img src="/static/please/5.png" />
+                </div>
+                <div>
+                  <img src="/static/please/2.png" />
+                </div>
+                <div>
+                  <img src="/static/please/6.png" />
+                </div>
+                <div>
+                  <img src="/static/please/3.png" />
+                </div>
+                <div>
+                  <img src="/static/please/4.png" />
+                </div>
+              </Carousel>
+              <PleaseWearText>
+                <Image
+                  alt="please wear .co"
+                  src="/static/please/please-wear-white.png"
+                  height={304}
+                  width={2188}
+                />
+                <p>Sustainable styles to provoke politely. →</p>
+              </PleaseWearText>
+            </PleaseWear>
+          </Footer>
+        </Grid>
+      </Container>
+      {isBack ? <Back /> : null}
+    </>
   );
 };
 
@@ -402,7 +404,6 @@ export async function getStaticProps() {
     console.log(error);
   });
   const dataSchedule = await resSchedule.json();
-
   const promiseSchedule = dataSchedule
     .map(
       async ({
@@ -416,9 +417,9 @@ export async function getStaticProps() {
         venue,
       }) => {
         const isHome = home_team === "Texas";
-        const isWin = isHome
-          ? away_points < home_points
-          : away_points > home_points;
+        const isWin =
+          (isHome ? away_points < home_points : away_points > home_points) ||
+          true; // TODO: Remove true for publish
         const opponent = isHome ? away_team : home_team;
 
         const resRecord = await fetch(
@@ -502,6 +503,7 @@ export async function getStaticProps() {
       : "No.";
   return {
     props: {
+      isBack: wins >= 10,
       progress: wins * 10,
       schedule,
       scheduleYear,
