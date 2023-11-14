@@ -46,6 +46,13 @@ const Container = styled.div`
   min-height: 95vh;
 `;
 
+const Credit = styled.p`
+  font-size: 0.75rem;
+  grid-column: 1 / -1;
+  text-align: center;
+  width: 100%;
+`;
+
 const Footer = styled.footer`
   grid-column: 1 / -1;
 `;
@@ -380,6 +387,15 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
               </PleaseWearText>
             </PleaseWear>
           </Footer>
+          {isBack ? (
+            <Credit>
+              Longhorn model by{" "}
+              <a href="https://skfb.ly/6Gqny" style={{ color: "inherit" }}>
+                Zafflex
+              </a>{" "}
+              and licensed under Creative Commons Attribution.
+            </Credit>
+          ) : null}
         </Grid>
       </Container>
       {isBack ? <Back /> : null}
@@ -417,9 +433,9 @@ export async function getStaticProps() {
         venue,
       }) => {
         const isHome = home_team === "Texas";
-        const isWin =
-          (isHome ? away_points < home_points : away_points > home_points) ||
-          true; // TODO: Remove true for publish
+        const isWin = isHome
+          ? away_points < home_points
+          : away_points > home_points;
         const opponent = isHome ? away_team : home_team;
 
         const resRecord = await fetch(

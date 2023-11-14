@@ -8,6 +8,14 @@ import styled, { keyframes } from "styled-components";
 
 const catGifs = [];
 
+const rotateKeyFrames = keyframes`
+from {
+  transform: rotateZ(0deg);
+}
+to {
+  transform: rotateZ(360deg);
+}`;
+
 const flybys = [
   keyframes`
     from {
@@ -43,15 +51,6 @@ const flybys = [
   `,
 ];
 
-const hue = keyframes`
-  from {
-    -webkit-filter: hue-rotate(0deg);
-  }
-  to {
-    -webkit-filter: hue-rotate(-360deg);
-  }
-`;
-
 const GlobalStyle = createGlobalStyle`
   .emoji-styles {
     z-index: 0 !important;
@@ -85,7 +84,11 @@ const Container = styled.div`
   z-index: 1;
 `;
 
-const Back = ({ progress, schedule, scheduleYear, status }) => {
+const SplineStyled = styled(Spline)`
+  animation: ${rotateKeyFrames} 5s infinite linear;
+`;
+
+const Back = () => {
   const [cat, setCat] = useState({
     catExploded: false,
     currentCatGif: Math.floor(Math.random() * catGifs.length),
@@ -132,7 +135,7 @@ const Back = ({ progress, schedule, scheduleYear, status }) => {
         {cat.catExploded ? (
           <img src="./static/back/explosion2.gif" />
         ) : (
-          <Spline scene="https://prod.spline.design/ZtkA19dp8cS1Tg6J/scene.splinecode" />
+          <SplineStyled scene="https://prod.spline.design/ZtkA19dp8cS1Tg6J/scene.splinecode" />
         )}
       </Cat>
       <GlobalStyle />
