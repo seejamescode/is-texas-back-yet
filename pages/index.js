@@ -324,7 +324,7 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
                             />
                           </span>
                           <br />
-                          <TextXs>{record.join("-")}</TextXs>
+                          {record ? <TextXs>{record.join("-")}</TextXs> : null}
                         </div>
                         <span>
                           {isFinished
@@ -420,6 +420,7 @@ export async function getStaticProps() {
     console.log(error);
   });
   const dataSchedule = await resSchedule.json();
+
   const promiseSchedule = dataSchedule
     .map(
       async ({
@@ -437,19 +438,6 @@ export async function getStaticProps() {
           ? away_points < home_points
           : away_points > home_points;
         const opponent = isHome ? away_team : home_team;
-
-        const resRecord = await fetch(
-          `https://api.collegefootballdata.com/teams/matchup?team1=Texas&team2=${opponent}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.COLLEGE_FOOTBALL_API_KEY}`,
-            },
-          }
-        ).catch((error) => {
-          // Your error is here!
-          console.log(error);
-        });
-        const dataRecord = await resRecord.json();
 
         return {
           datetime: start_date,
@@ -484,7 +472,6 @@ export async function getStaticProps() {
               : `<strong>${opponent}</strong>`,
           pointsOpponent: isHome ? away_points : home_points,
           pointsTexas: isHome ? home_points : away_points,
-          record: [dataRecord.team1Wins, dataRecord.team2Wins, dataRecord.ties],
           venue,
         };
       }

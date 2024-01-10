@@ -97,6 +97,7 @@ const Cow = styled.div`
   animation: ${(props) => props.keyframes} ${cowInterval}ms infinite linear;
   left: 0;
   overflow: visible;
+  pointer-events: all;
   position: absolute;
   top: 0;
   width: 50vmin;
@@ -114,6 +115,7 @@ const Container = styled.div`
   left: 0;
   overflow: hidden;
   padding: 1rem;
+  pointer-events: none;
   position: fixed;
   top: 0;
   width: 100%;
