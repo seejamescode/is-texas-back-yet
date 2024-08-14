@@ -103,16 +103,17 @@ const ImageContainer = styled.div`
   }
 `;
 
-const PleaseWear = styled.a`
+const PleaseWear = styled.div`
   background: #3c486b;
   background: linear-gradient(45deg, #3c486b, #516090);
   border-radius: 1rem;
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
   margin: auto;
   margin-bottom: 1rem;
-  max-width: 20rem;
-  padding: 1rem 2rem;
+  max-width: 40rem;
+  padding: 1.5rem 2rem;
   position: relative;
   text-decoration: none;
   z-index: 1;
@@ -124,16 +125,14 @@ const PleaseWear = styled.a`
     text-align: left !important;
   }
 
-  .carousel-root {
-    flex: 1;
-    transform: scale(1.75);
-    transform-origin: center center;
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
+    flex-direction: row;
+    padding: 1rem 0.5rem;
   }
 `;
 
 const PleaseWearText = styled.div`
   display: flex;
-  flex: 2;
   flex-direction: column;
   gap: 0.5rem;
   justify-content: center;
@@ -242,29 +241,13 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
         <Grid>
           <GridItem>
             <Half>
-              <Section noVerticalPadding style={{ zIndex: 1 }}>
+              <Section style={{ paddingTop: 0, zIndex: 1 }}>
                 <TextLg>Is Texas Back Yet?</TextLg>
-                <TextLg
-                  as="h4"
-                  style={{
-                    fontSize: "2rem",
-                    marginTop: "-.25rem",
-                  }}
-                >
-                  <i>Big 12 Farewell Tour</i>
-                </TextLg>
-                <ImageContainer>
-                  <Image
-                    src="/static/big-12-farewell-tour.png"
-                    width={4689}
-                    height={2374}
-                  />
-                </ImageContainer>
-                {/* <TextSm>
-                For Texas Football to truly be back, we must maintain ten wins
-                each season. This is pure science, so share with any misinformed
-                colleagues.
-              </TextSm> */}
+                <TextSm>
+                  For Texas Football to truly be back, we must maintain ten wins
+                  every season. This is pure science, so share with any
+                  misinformed colleagues.
+                </TextSm>
               </Section>
               <AnimatePresence>
                 <SectionPanel
@@ -346,44 +329,41 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
             </Half>
           </GridItem>
           <Footer>
-            <PleaseWear href="https://pleasewear.co" target="_blank">
-              <Carousel
-                autoPlay
-                infiniteLoop
-                interval={4000}
-                showArrows={false}
-                showStatus={false}
-                showIndicators={false}
-                showThumbs={false}
-                transitionTime={2000}
-              >
-                <div>
-                  <img src="/static/please/1.png" />
-                </div>
-                <div>
-                  <img src="/static/please/5.png" />
-                </div>
-                <div>
-                  <img src="/static/please/2.png" />
-                </div>
-                <div>
-                  <img src="/static/please/6.png" />
-                </div>
-                <div>
-                  <img src="/static/please/3.png" />
-                </div>
-                <div>
-                  <img src="/static/please/4.png" />
-                </div>
-              </Carousel>
-              <PleaseWearText>
-                <Image
-                  alt="please wear .co"
-                  src="/static/please/please-wear-white.png"
-                  height={304}
-                  width={2188}
+            <PleaseWear>
+              <div style={{ justifyContent: "center", display: "flex" }}>
+                <img
+                  src="/static/sosh/widget-preview.png"
+                  style={{ maxHeight: "8rem" }}
                 />
-                <p>Sustainable styles to provoke politely. →</p>
+              </div>
+              <PleaseWearText>
+                <p
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Ditch social media, connect with friends
+                </p>
+                <p>
+                  Use Sōsh to send and receive photos with friends, directly on
+                  each others' phone home screens.
+                </p>
+                <div style={{ display: "flex", paddingTop: ".5rem" }}>
+                  <a
+                    href="https://apps.apple.com/us/app/s%C5%8Dsh-photo-tile-for-friends/id6504143636"
+                    style={{
+                      background: "white",
+                      borderRadius: ".5rem",
+                      color: "black",
+                      padding: ".75rem 1rem",
+                      fontWeight: "600",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Get the app
+                  </a>
+                </div>
               </PleaseWearText>
             </PleaseWear>
           </Footer>
@@ -447,28 +427,8 @@ export async function getStaticProps() {
           isHome,
           isWin,
           opponent:
-            opponent === "Alabama" && isWin
-              ? "We <s>Want</s> <i>Beat</i> <strong>Bama</strong>"
-              : opponent === "Baylor"
-              ? "Bye Bye <strong>Baylor</strong>"
-              : opponent === "Kansas"
-              ? "Call us, <strong>Kansas</strong>"
-              : opponent === "Oklahoma" && isWin
-              ? "<strong>OU</strong> still sucks"
-              : opponent === "Oklahoma"
-              ? "y<strong>OU</strong> and me 4ever"
-              : opponent === "Houston"
-              ? "Hi and bye <strong>Houston</strong>"
-              : opponent === "BYU"
-              ? "BYE <strong>BYU</strong>"
-              : opponent === "Kansas State"
-              ? "Kiss <strong>Kansas State</strong> goodbye"
-              : opponent === "TCU"
-              ? "Write you, <strong>TCU</strong>"
-              : opponent === "Iowa State"
-              ? "I-won't-miss <strong>Iowa State</strong>"
-              : opponent === "Texas Tech"
-              ? "Take care, <strong>Texas Tech</strong>"
+            opponent === "Oklahoma" && isWin
+              ? "<strong>OU sucks</strong>"
               : `<strong>${opponent}</strong>`,
           pointsOpponent: isHome ? away_points : home_points,
           pointsTexas: isHome ? home_points : away_points,
