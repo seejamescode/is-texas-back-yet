@@ -185,7 +185,7 @@ const TextLg = styled.h1`
   line-height: 1;
   margin-bottom: ${({ theme }) => theme.sizing.sm}rem;
   margin-top: 0;
-  text-align: ${({ textAlign }) => textAlign};
+  text-align: center;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}rem) {
     font-size: ${({ theme }) => theme.sizing.xl}rem;
@@ -241,7 +241,9 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
         <Grid>
           <GridItem>
             <Half>
-              <Section style={{ paddingTop: 0, zIndex: 1 }}>
+              <Section
+                style={{ paddingBottom: "2rem", paddingTop: 0, zIndex: 1 }}
+              >
                 <TextLg>Is Texas Back Yet?</TextLg>
                 <TextSm>
                   For Texas Football to truly be back, we must maintain ten wins
@@ -255,9 +257,7 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
                   key="status"
                   transition={{ duration: 1 }}
                 >
-                  <TextLg as="h2" textAlign="center">
-                    {status}
-                  </TextLg>
+                  <TextLg as="h2">{status}</TextLg>
                   <BarContainer
                     isZero={progress == 0}
                     progress={`${progress}% back`}
