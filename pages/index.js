@@ -245,7 +245,7 @@ const Home = ({ isBack, progress, schedule, scheduleYear, status }) => {
                 style={{ paddingBottom: "2rem", paddingTop: 0, zIndex: 1 }}
               >
                 <TextLg>Is Texas Back Yet?</TextLg>
-                <TextSm>
+                <TextSm textAlign="center">
                   For Texas Football to truly be back, we must maintain ten wins
                   every season. This is pure science, so share with any
                   misinformed colleagues.
@@ -400,38 +400,37 @@ export async function getStaticProps() {
     console.log(error);
   });
   const dataSchedule = await resSchedule.json();
-
   const promiseSchedule = dataSchedule
     .map(
       async ({
-        away_points,
-        away_team,
-        home_points,
-        home_team,
+        awayPoints,
+        awayTeam,
+        homePoints,
+        homeTeam,
         id,
-        start_date,
-        start_time_tbd,
+        startDate,
+        startTimeTBD,
         venue,
       }) => {
-        const isHome = home_team === "Texas";
+        const isHome = homeTeam === "Texas";
         const isWin = isHome
-          ? away_points < home_points
-          : away_points > home_points;
-        const opponent = isHome ? away_team : home_team;
+          ? awayPoints < homePoints
+          : awayPoints > homePoints;
+        const opponent = isHome ? awayTeam : homeTeam;
 
         return {
-          datetime: start_date,
+          datetime: startDate,
           id,
-          isTimeScheduled: !start_time_tbd,
-          isFinished: home_points !== null && away_points !== null,
+          isTimeScheduled: !startTimeTBD,
+          isFinished: homePoints !== null && awayPoints !== null,
           isHome,
           isWin,
           opponent:
             opponent === "Oklahoma" && isWin
               ? "<strong>OU sucks</strong>"
               : `<strong>${opponent}</strong>`,
-          pointsOpponent: isHome ? away_points : home_points,
-          pointsTexas: isHome ? home_points : away_points,
+          pointsOpponent: isHome ? awayPoints : homePoints,
+          pointsTexas: isHome ? homePoints : awayPoints,
           venue,
         };
       }
